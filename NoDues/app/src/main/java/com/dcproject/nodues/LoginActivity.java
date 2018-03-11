@@ -169,8 +169,8 @@ public class LoginActivity extends Activity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-                        DatabaseReference DeptRef = db.child("Departments");
-                        DatabaseReference StuRef = db.child("Students");
+                        Query DeptRef = db.child("Departments").orderByChild("email").equalTo(user.getEmail());
+                        Query StuRef = db.child("Students").orderByChild("email").equalTo(user.getEmail());
 
                         // If task done Successful.
                         if(task.isSuccessful()){
@@ -178,13 +178,13 @@ public class LoginActivity extends Activity {
                             // Closing the current Login Activity.
                             //finish();
                             Log.d(TAG, "signInWithEmail:success");
-                            final String uid = user.getUid();
-                            Log.d(TAG, "UserID:" + uid);
+                            final String email = user.getEmail();
+                            Log.d(TAG, "Email :" + email);
 
                             StuRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.child(uid).exists()) {
+                                    if (dataSnapshot.hasChildren()) {
                                         Log.d(TAG, "Student exist");
                                         StuExist();
                                     } else {
@@ -199,7 +199,7 @@ public class LoginActivity extends Activity {
                             DeptRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.child(uid).exists()) {
+                                    if (dataSnapshot.hasChildren()) {
                                         Log.d(TAG, "Dept exist");
                                         DeptExist();
                                     } else {

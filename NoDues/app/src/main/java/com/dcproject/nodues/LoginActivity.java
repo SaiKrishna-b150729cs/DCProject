@@ -177,9 +177,9 @@ public class LoginActivity extends Activity {
                         if(task.isSuccessful()){
                             progressDialog.dismiss();
                             // Closing the current Login Activity.
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            FirebaseUser user = firebaseAuth.getCurrentUser();
                             DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-                            Query DeptRef = db.child("Departments").orderByChild("email").equalTo(user.getEmail());
+                            final Query DeptRef = db.child("Departments").orderByChild("email").equalTo(user.getEmail());
                             Query StuRef = db.child("Students").orderByChild("email").equalTo(user.getEmail());
 
 
@@ -196,6 +196,25 @@ public class LoginActivity extends Activity {
                                         StuExist();
                                     } else {
                                         Log.d(TAG, "Student does not exist");
+
+                                        DeptRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                if (dataSnapshot.hasChildren()) {
+                                                    Log.d(TAG, "Dept exist");
+                                                    DeptExist();
+                                                } else {
+                                                    Log.d(TAG, "Faculty does not exist");
+                                                    firebaseAuth.signOut();
+                                                    Toast.makeText(LoginActivity.this, "No user available with entered details", Toast.LENGTH_LONG).show();
+                                                }
+                                            }
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+                                                Log.d(TAG, "In onCancelled Faculty");
+                                            }
+                                        });
+
                                         //Toast.makeText(LoginActivity.this, "No user available with entered details", Toast.LENGTH_LONG).show();
                                     }
                                 }
@@ -204,23 +223,7 @@ public class LoginActivity extends Activity {
                                     Log.d(TAG, "In onCancelled Student");
                                 }
                             });
-                            DeptRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.hasChildren()) {
-                                        Log.d(TAG, "Dept exist");
-                                        DeptExist();
-                                    } else {
-                                        Log.d(TAG, "Faculty does not exist");
-                                        //Toast.makeText(LoginActivity.this, "No user available with entered details", Toast.LENGTH_LONG).show();
-                                    }
-                                }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-                                    Log.d(TAG, "In onCancelled Faculty");
-                                }
-                            });
 
                             //Toast.makeText(LoginActivity.this, "No user available with entered details", Toast.LENGTH_LONG).show();
 
@@ -241,7 +244,7 @@ public class LoginActivity extends Activity {
 
     public void Loginexist(){
         Log.d(TAG, "login exist");
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         DatabaseReference DeptRef = db.child("Departments");
         DatabaseReference StuRef = db.child("Students");

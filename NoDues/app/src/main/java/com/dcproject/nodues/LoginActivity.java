@@ -27,6 +27,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.ProviderQueryResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -47,7 +48,7 @@ public class LoginActivity extends Activity {
 
     FirebaseAuth firebaseAuth;
 
-    //google sigin
+    ///google sigin
     public static final String TAG = "LoginActivity";
     public static final int RequestSignInCode = 7;
     public GoogleApiClient googleApiClient;
@@ -118,7 +119,11 @@ public class LoginActivity extends Activity {
                     Toast.makeText(LoginActivity.this, "Enter a valid Email", Toast.LENGTH_LONG).show();
                 }
                 else {
-                    finish();
+                    //finish();
+                    progressDialog.setMessage("Please Wait");
+                    progressDialog.show();
+                    send_email();
+                    progressDialog.dismiss();
                     Toast.makeText(LoginActivity.this, "Reset Link sent to your Mail", Toast.LENGTH_LONG).show();
                 }
             }
@@ -167,19 +172,21 @@ public class LoginActivity extends Activity {
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-                        Query DeptRef = db.child("Departments").orderByChild("email").equalTo(user.getEmail());
-                        Query StuRef = db.child("Students").orderByChild("email").equalTo(user.getEmail());
 
                         // If task done Successful.
                         if(task.isSuccessful()){
                             progressDialog.dismiss();
                             // Closing the current Login Activity.
-                            //finish();
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+                            Query DeptRef = db.child("Departments").orderByChild("email").equalTo(user.getEmail());
+                            Query StuRef = db.child("Students").orderByChild("email").equalTo(user.getEmail());
+
+
                             Log.d(TAG, "signInWithEmail:success");
                             final String email = user.getEmail();
                             Log.d(TAG, "Email :" + email);
+
 
                             StuRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -189,6 +196,7 @@ public class LoginActivity extends Activity {
                                         StuExist();
                                     } else {
                                         Log.d(TAG, "Student does not exist");
+                                        //Toast.makeText(LoginActivity.this, "No user available with entered details", Toast.LENGTH_LONG).show();
                                     }
                                 }
                                 @Override
@@ -204,6 +212,7 @@ public class LoginActivity extends Activity {
                                         DeptExist();
                                     } else {
                                         Log.d(TAG, "Faculty does not exist");
+                                        //Toast.makeText(LoginActivity.this, "No user available with entered details", Toast.LENGTH_LONG).show();
                                     }
                                 }
 
@@ -214,7 +223,7 @@ public class LoginActivity extends Activity {
                             });
 
                             //Toast.makeText(LoginActivity.this, "No user available with entered details", Toast.LENGTH_LONG).show();
-                            
+
 
                         }
                         else {
@@ -228,6 +237,113 @@ public class LoginActivity extends Activity {
                 });
 
     }
+
+
+    public void Loginexist(){
+        Log.d(TAG, "login exist");
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference DeptRef = db.child("Departments");
+        DatabaseReference StuRef = db.child("Students");
+        final String uid = user.getUid();
+        StuRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child(uid).exists()) {
+                    Log.d(TAG, "Student exist");
+                    StuExist();
+                    return;
+                } else {
+                    Log.d(TAG, "Student does not exist");
+                    //Toast.makeText(LoginActivity.this, "User doesn't exist", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "In onCancelled Student");
+            }
+        });
+        DeptRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child(uid).exists()) {
+                    Log.d(TAG, "Faculty exist");
+                    DeptExist();
+                    return;
+                } else {
+                    Log.d(TAG, "Faculty does not exist");
+                    //Toast.makeText(LoginActivity.this, "User doesn't exist", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "In onCancelled Faculty");
+            }
+        });
+
+        //Toast.makeText(LoginActivity.this, "No user available with entered details", Toast.LENGTH_LONG).show();
+
+    }
+
+
+    public void StuExist(){
+        Log.d(TAG, "In Student Exists");
+        Log.d(TAG, "Start Student Intent");
+        //finish();
+        Intent intent = new Intent(LoginActivity.this, StudentActivity.class);
+        startActivity(intent);
+
+    }
+
+    public void DeptExist(){
+        Log.d(TAG, "Start Dept Exists");
+        Log.d(TAG, "Start Dept Intent");
+        //finish();
+        Intent intent = new Intent(LoginActivity.this, DepartmentActivity.class);
+        startActivity(intent);
+
+
+    }
+
+
+    void send_email() {
+        Log.d(TAG, "In send email");
+
+        firebaseAuth.fetchProvidersForEmail(EmailHolder).addOnCompleteListener(new OnCompleteListener<ProviderQueryResult>() {
+            @Override
+            public void onComplete(@NonNull Task<ProviderQueryResult> task) {
+                Log.d(TAG, "");
+                if (task.isSuccessful()) {
+                    if (task.getResult().getProviders().size() == 1) {
+                        Log.d(TAG, "user exist sending mail");
+                        firebaseAuth.sendPasswordResetEmail(EmailHolder).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d(TAG, "Email sent." + EmailHolder);
+                                    Toast.makeText(LoginActivity.this, "Reset Link sent to your Mail", Toast.LENGTH_LONG).show();
+                                } else {
+                                    Log.d(TAG, "Email sending failed");
+                                    Toast.makeText(LoginActivity.this, "Can't send Email check Connectivity", Toast.LENGTH_LONG).show();
+
+                                }
+                            }
+                        });
+
+                    } else {
+                        Log.d(TAG, "user doesn't exist");
+                        Toast.makeText(LoginActivity.this, "User doesn't exist", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Log.d(TAG, "user doesn't exist");
+                    Toast.makeText(LoginActivity.this, "Email Not Registered", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
 
     public void googleSignIn(){
         Intent AuthIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
@@ -265,20 +381,15 @@ public class LoginActivity extends Activity {
                             /*
                             // Getting Current Login user details.
                             FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-
                             // Showing Log out button.
                             SignOutButton.setVisibility(View.VISIBLE);
-
                             // Hiding Login in button.
                             signInButton.setVisibility(View.GONE);
-
                             // Showing the TextView.
                             LoginUserEmail.setVisibility(View.VISIBLE);
                             LoginUserName.setVisibility(View.VISIBLE);
-
                             // Setting up name into TextView.
                             LoginUserName.setText("NAME =  "+ firebaseUser.getDisplayName().toString());
-
                             // Setting up Email into TextView.
                             LoginUserEmail.setText("Email =  "+ firebaseUser.getEmail().toString());
                             */
@@ -289,68 +400,6 @@ public class LoginActivity extends Activity {
                 });
     }
 
-    public void Loginexist(){
-        Log.d(TAG, "login exist");
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference DeptRef = db.child("Departments");
-        DatabaseReference StuRef = db.child("Students");
-        final String uid = user.getUid();
-        StuRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(uid).exists()) {
-                    Log.d(TAG, "Student exist");
-                    StuExist();
-                    return;
-                } else {
-                    Log.d(TAG, "Student does not exist");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "In onCancelled Student");
-            }
-        });
-        DeptRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(uid).exists()) {
-                    Log.d(TAG, "Faculty exist");
-                    DeptExist();
-                    return;
-                } else {
-                    Log.d(TAG, "Faculty does not exist");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, "In onCancelled Faculty");
-            }
-        });
-    }
-
-
-    public void StuExist(){
-        Log.d(TAG, "In Student Exists");
-        Log.d(TAG, "Start Student Intent");
-        finish();
-        Intent intent = new Intent(LoginActivity.this, StudentActivity.class);
-        startActivity(intent);
-
-    }
-
-    public void DeptExist(){
-        Log.d(TAG, "Start Dept Exists");
-        Log.d(TAG, "Start Dept Intent");
-        finish();
-        Intent intent = new Intent(LoginActivity.this, DepartmentActivity.class);
-        startActivity(intent);
-
-
-    }
 
 
 

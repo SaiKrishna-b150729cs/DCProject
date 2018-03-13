@@ -13,7 +13,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class DepartmentActivity extends Activity {
 
-    Button logout,addStu,ViewReq ;
+    Button logout,addStu,ViewReq,updateDueBtn ;
     // Creating TextView.
     TextView userEmailShow ;
     // Creating FirebaseAuth.
@@ -30,6 +30,7 @@ public class DepartmentActivity extends Activity {
         addStu=(Button)findViewById(R.id.addStuBtn);
         ViewReq=(Button)findViewById(R.id.viewReqBtn);
         userEmailShow=(TextView)findViewById(R.id.department);
+        updateDueBtn=(Button)findViewById(R.id.UpdateDueBtn);
 
         firebaseAuth= FirebaseAuth.getInstance();
 
@@ -71,6 +72,15 @@ public class DepartmentActivity extends Activity {
             public void onClick(View v) {
                 finish();
                 Intent intent=new Intent(DepartmentActivity.this,ViewRequestsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        updateDueBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                Intent intent=new Intent(DepartmentActivity.this,UpdateDueActivity.class);
                 startActivity(intent);
             }
         });

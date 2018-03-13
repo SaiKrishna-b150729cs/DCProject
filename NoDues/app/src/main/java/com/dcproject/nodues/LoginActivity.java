@@ -175,7 +175,7 @@ public class LoginActivity extends Activity {
 
                         // If task done Successful.
                         if(task.isSuccessful()){
-                            progressDialog.dismiss();
+
                             // Closing the current Login Activity.
                             FirebaseUser user = firebaseAuth.getCurrentUser();
                             DatabaseReference db = FirebaseDatabase.getInstance().getReference();
@@ -194,6 +194,7 @@ public class LoginActivity extends Activity {
                                     if (dataSnapshot.hasChildren()) {
                                         Log.d(TAG, "Student exist");
                                         StuExist();
+                                        progressDialog.dismiss();
                                     } else {
                                         Log.d(TAG, "Student does not exist");
 
@@ -203,6 +204,7 @@ public class LoginActivity extends Activity {
                                                 if (dataSnapshot.hasChildren()) {
                                                     Log.d(TAG, "Dept exist");
                                                     DeptExist();
+                                                    progressDialog.dismiss();
                                                 } else {
                                                     Log.d(TAG, "Faculty does not exist");
                                                     firebaseAuth.signOut();
@@ -294,7 +296,7 @@ public class LoginActivity extends Activity {
     public void StuExist(){
         Log.d(TAG, "In Student Exists");
         Log.d(TAG, "Start Student Intent");
-        //finish();
+        finish();
         Intent intent = new Intent(LoginActivity.this, StudentActivity.class);
         startActivity(intent);
 
@@ -303,7 +305,7 @@ public class LoginActivity extends Activity {
     public void DeptExist(){
         Log.d(TAG, "Start Dept Exists");
         Log.d(TAG, "Start Dept Intent");
-        //finish();
+        finish();
         Intent intent = new Intent(LoginActivity.this, DepartmentActivity.class);
         startActivity(intent);
 

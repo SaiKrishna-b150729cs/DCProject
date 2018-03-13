@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.text.TextUtilsCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,16 +12,31 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.sql.Timestamp;
+import java.util.Date;
 
 public class UpdateDueActivity extends Activity {
 
     EditText etRollno,etDue,etReason;
     Button  updateBtn;
 
-    String rollNo,dueAmount,reason,email;
+    String rollNo;
+    String dueAmount;
+    String reason;
+    String email,department;
+    int dues;
 
     FirebaseAuth firebaseAuth;
     FirebaseUser User;
+
+    DatabaseReference db;
 
     public static final String TAG = "UpdateDueActivity";
 
@@ -43,6 +59,31 @@ public class UpdateDueActivity extends Activity {
             startActivity(intent);
         }
 
+        User=firebaseAuth.getCurrentUser();
+        //email=User.getEmail().toString();
+
+        db= FirebaseDatabase.getInstance().getReference();
+        //retrive department name
+        DatabaseReference dept=db.child("Departments");
+        Query deptquery = dept.orderByChild("email").equalTo(User.getEmail());
+        Log.d(TAG,"in getDeptId "+ User.getEmail() +deptquery.toString());
+        deptquery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "data" +dataSnapshot.toString());
+                for(DataSnapshot dept1 : dataSnapshot.getChildren()){
+                    Log.d(TAG, dept1.toString());
+                    department = dept1.getKey();
+                    break;
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG,"database error in getdept id");
+            }
+        });
+
+
 
         updateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +105,7 @@ public class UpdateDueActivity extends Activity {
             return false;
         }
         if(dueAmount.isEmpty()) {
+            dues=Integer.parseInt(dueAmount);
             Toast.makeText(UpdateDueActivity.this, "Enter a Due amount", Toast.LENGTH_LONG).show();
             return false;
         }
@@ -75,11 +117,9 @@ public class UpdateDueActivity extends Activity {
     }
 
     public void adddue(){
-
-        firebaseAuth=FirebaseAuth.getInstance();
-        User=firebaseAuth.getCurrentUser();
-        email=User.getEmail().toString();
-
+        DatabaseReference dbDues=db.child("Dues");
+        dbDues.child(department).child(rollNo).push().setValue(new Dues(reason,dues,new Date()));
+        Log.d(TAG,"Due updated");
 
     }
 }

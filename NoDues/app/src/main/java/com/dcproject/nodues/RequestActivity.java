@@ -199,6 +199,9 @@ public class RequestActivity extends Activity {
                             break;
                         }
                         sendrequest();
+                        Toast.makeText(getApplicationContext(),
+                                "Request sent to the selected departments " ,
+                                Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

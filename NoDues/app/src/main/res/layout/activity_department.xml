@@ -26,10 +26,19 @@
         android:layout_marginTop="30dp"/>
 
     <Button
+        android:id="@+id/UpdateDueBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/viewReqBtn"
+        android:layout_marginTop="20dp"
+        android:text="Update Due"
+        />
+
+    <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/addStuBtn"
-        android:layout_below="@+id/viewReqBtn"
+        android:layout_below="@+id/UpdateDueBtn"
         android:text="Add Students"
         android:layout_marginTop="30dp"/>
 

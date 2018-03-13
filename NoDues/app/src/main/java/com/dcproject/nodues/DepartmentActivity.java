@@ -60,8 +60,6 @@ public class DepartmentActivity extends Activity {
         addStu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                finish();
                 Intent intent=new Intent(DepartmentActivity.this,AddStudentsActivity.class);
                 startActivity(intent);
             }
@@ -70,7 +68,6 @@ public class DepartmentActivity extends Activity {
         ViewReq.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
                 Intent intent=new Intent(DepartmentActivity.this,ViewRequestsActivity.class);
                 startActivity(intent);
             }
@@ -79,7 +76,6 @@ public class DepartmentActivity extends Activity {
         updateDueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
                 Intent intent=new Intent(DepartmentActivity.this,UpdateDueActivity.class);
                 startActivity(intent);
             }

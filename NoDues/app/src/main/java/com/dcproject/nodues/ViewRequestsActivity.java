@@ -43,7 +43,7 @@ public class ViewRequestsActivity extends Activity {
         Log.d(TAG,"calling getDeptId");
         Query deptquery = dept.orderByChild("email").equalTo(user.getEmail());
         Log.d(TAG,"in getDeptId "+ user.getEmail() +deptquery.toString());
-        deptquery.addValueEventListener(new ValueEventListener() {
+        deptquery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d(TAG, "data" +dataSnapshot.toString());
@@ -68,6 +68,7 @@ public class ViewRequestsActivity extends Activity {
         request.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                students.clear();
                 for(DataSnapshot student : dataSnapshot.getChildren()){
                     if(student.getValue().toString().equals("pending")){
                         students.add(student.getKey());

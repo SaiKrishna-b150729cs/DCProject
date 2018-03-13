@@ -63,45 +63,22 @@ public class StudentActivity extends Activity {
                 Toast.makeText(StudentActivity.this,"Logged Out Successfully.",Toast.LENGTH_LONG).show();
             }
         });
+        final Button[] button = new Button[1];
 
-        request.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                firebaseAuth=FirebaseAuth.getInstance();
-                FirebaseUser user=firebaseAuth.getCurrentUser();
-                final DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-                Query student = db.child("Students").orderByChild("email").equalTo(user.getEmail());
+        button[0] = (Button) findViewById(R.id.request);
 
-                student.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for(DataSnapshot stu : dataSnapshot.getChildren()){
-                            rollno =stu.getKey();
-                            break;
-                        }
-                    }
+        // Capture button clicks
+        button[0].setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-                DatabaseReference department = db.child("Departments");
-                department.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for(DataSnapshot dept : dataSnapshot.getChildren()){
-                            DatabaseReference request = db.child("Request").child(dept.getKey()).child(rollno);
-                                request.setValue("pending");
-                        }
-                        Toast.makeText(StudentActivity.this, "Requests sent", Toast.LENGTH_LONG).show();
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                // Start NewActivity.class
+                Intent myIntent = new Intent(StudentActivity.this,
+                        RequestActivity.class);
+                startActivity(myIntent);
             }
         });
-    }
+
+            }
+
 }
+

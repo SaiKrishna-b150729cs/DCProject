@@ -28,7 +28,8 @@
         <activity android:name=".DepartmentActivity" />
         <activity android:name=".AddStudentsActivity" />
         <activity android:name=".ViewRequestsActivity" />
-        <activity android:name=".UpdateDueActivity"></activity>
+        <activity android:name=".UpdateDueActivity" />
+        <activity android:name=".StudentDuesActivity"></activity>
     </application>
 
 </manifest>

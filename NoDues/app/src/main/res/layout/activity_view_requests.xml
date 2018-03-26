@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants"
     tools:context="com.dcproject.nodues.ViewRequestsActivity">
 
     <ListView
         android:id="@+id/requests_list"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:scrollbars="horizontal"
         app:layout_constraintDimensionRatio="h,1:1"
         tools:layout_editor_absoluteX="8dp"

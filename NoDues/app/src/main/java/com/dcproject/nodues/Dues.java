@@ -7,7 +7,8 @@ import java.util.Date;
 public class Dues {
     public String rollno,reason;
     public int due;
-    Date updatetime;
+    Date date;
+    Timestamp t1;
 
     public Dues(){
 
@@ -16,7 +17,7 @@ public class Dues {
     public Dues(String reason, int due, Date d1){
         this.reason=reason;
         this.due=due;
-        this.updatetime=d1;
+        this.date=d1;
     }
 
     public Dues(String rollno,String reason,int due){

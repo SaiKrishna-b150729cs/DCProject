@@ -20,6 +20,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 
 public class UpdateDueActivity extends Activity {
@@ -105,10 +106,11 @@ public class UpdateDueActivity extends Activity {
             return false;
         }
         if(dueAmount.isEmpty()) {
-            dues=Integer.parseInt(dueAmount);
             Toast.makeText(UpdateDueActivity.this, "Enter a Due amount", Toast.LENGTH_LONG).show();
             return false;
         }
+        else
+            dues=Integer.parseInt(dueAmount);
         if(reason.isEmpty()){
             Toast.makeText(UpdateDueActivity.this, "Enter Due reason", Toast.LENGTH_LONG).show();
             return false;
@@ -118,9 +120,13 @@ public class UpdateDueActivity extends Activity {
 
     public void adddue(){
         DatabaseReference dbDues=db.child("Dues");
-        dbDues.child(department).child(rollNo).push().setValue(new Dues(reason,dues,new Date()));
+        dbDues.child(department).child(rollNo).push().setValue(new Dues(reason,dues, Calendar.getInstance().getTime()));
+        //etRollno.setText("");
+        etRollno.getText().clear();
+        etReason.setText("");
+        etDue.setText("");
+        Toast.makeText(this,"Due Added",Toast.LENGTH_LONG).show();
         Log.d(TAG,"Due updated");
-
     }
 }
 

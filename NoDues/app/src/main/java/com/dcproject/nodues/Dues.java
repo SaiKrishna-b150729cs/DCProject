@@ -5,14 +5,20 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 public class Dues {
-    public String rollno,reason;
+    private String id;
+    private String reason;
     public int due;
     Date date;
-    Timestamp t1;
 
     public Dues(){
 
     }
+
+    public void setid(String id){this.id=id;}
+
+    public void setdue(Integer due){this.due=due;}
+
+    public void setreason(String reason){this.reason=reason;}
 
     public Dues(String reason, int due, Date d1){
         this.reason=reason;
@@ -20,10 +26,8 @@ public class Dues {
         this.date=d1;
     }
 
-    public Dues(String rollno,String reason,int due){
-        this.rollno=rollno;
-        this.reason=reason;
-        this.due=due;
-    }
+    public String getreason(){return reason;}
+
+    public Integer getdue(){return due;}
 
 }

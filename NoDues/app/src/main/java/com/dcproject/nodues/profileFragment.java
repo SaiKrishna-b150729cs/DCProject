@@ -7,6 +7,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,10 +31,11 @@ import static java.sql.Types.NULL;
 public class profileFragment extends Fragment {
 
     FirebaseUser user;
-    DatabaseReference db;
+    DatabaseReference db=FirebaseDatabase.getInstance().getReference();
 
     Student studata;
-
+    String rollno;
+    ImageView edit_btn;
     public static final String TAG = "profileFragment";
 
 
@@ -51,8 +55,8 @@ public class profileFragment extends Fragment {
         final TextView roll_tv=(TextView)view.findViewById(R.id.tv_rollno);
         final TextView year_tv=(TextView)view.findViewById(R.id.tv_year);
 
+        edit_btn=(ImageView)view.findViewById(R.id.edit);
         user= FirebaseAuth.getInstance().getCurrentUser();
-        db = FirebaseDatabase.getInstance().getReference();
         final Query student = db.child("Students").orderByChild("email").equalTo(user.getEmail());
 
         student.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -63,12 +67,12 @@ public class profileFragment extends Fragment {
                     for(DataSnapshot stu : dataSnapshot.getChildren()){
 
                         Log.d(TAG,"Roll no"+stu.getKey());
+                        rollno=stu.getKey();
                         studata=stu.getValue(Student.class);
 
                         Log.d(TAG,"Name"+studata.getname());
                         Log.d(TAG,"branch"+studata.getbranch());
                         Log.d(TAG,"email"+studata.getemail());
-
 
                         name_tv.setText(studata.getname());
                         roll_tv.setText(stu.getKey());
@@ -93,6 +97,45 @@ public class profileFragment extends Fragment {
             }
         });
 
+        edit_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG,"Edit profile button");
+                /*view.findViewById(R.id.details_view).setVisibility(View.GONE);
+                view.findViewById(R.id.details_edit).setVisibility(View.VISIBLE);
+
+                final EditText branch_et,programme_et,year_et,phone_et;
+                branch_et=(EditText)view.findViewById(R.id.et_branch);
+                programme_et=(EditText)view.findViewById(R.id.et_programme);
+                year_et=(EditText)view.findViewById(R.id.et_year);
+                phone_et=(EditText)view.findViewById(R.id.et_mobile);
+
+                branch_et.setText(studata.getbranch());
+                programme_et.setText(studata.getprogramme());
+                year_et.setText(studata.getyear());
+                phone_et.setText(studata.getPhone());
+
+                Button updatebtn=(Button)view.findViewById(R.id.update_btn);
+
+                updatebtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        DatabaseReference sturef=db.child("Students").child(rollno);
+                        sturef.child("branch").setValue(branch_et.getText().toString());
+                        sturef.child("programme").setValue(programme_et.getText().toString());
+                        sturef.child("year").setValue(year_et.getText().toString());
+                        sturef.child("phone").setValue(phone_et.getText().toString());
+
+                        view.findViewById(R.id.details_view).setVisibility(View.VISIBLE);
+                        view.findViewById(R.id.details_edit).setVisibility(View.GONE);
+
+
+                    }
+                });
+            */
+            }
+        });
 
 
         return view;

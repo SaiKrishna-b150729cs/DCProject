@@ -66,7 +66,7 @@ public class StudentActivity extends AppCompatActivity
         userEmailShow.setText(firebaseUser.getEmail());
 
         //add this line to display menu1 when the activity is loaded
-        displaySelectedScreen(R.id.nav_Profile);
+        displaySelectedScreen(R.id.nav_Instructions);
     }
 
     @Override
@@ -108,6 +108,9 @@ public class StudentActivity extends AppCompatActivity
 
         //initializing the fragment object which is selected
         switch (itemId) {
+            case R.id.nav_Instructions:
+                fragment = new instructionsFragment();
+                break;
             case R.id.nav_Profile:
                 fragment = new profileFragment();
                 break;

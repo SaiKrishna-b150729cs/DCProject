@@ -1,8 +1,11 @@
 package com.dcproject.nodues;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -19,6 +22,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+
+import static com.dcproject.nodues.StudentDuesActivity.DEPARTMENT;
+import static com.dcproject.nodues.StudentDuesActivity.ROLLNO;
 
 public class ViewRequestsActivity extends Activity {
 
@@ -92,5 +98,18 @@ public class ViewRequestsActivity extends Activity {
     public void displayList(){
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, students);
         requests.setAdapter(adapter);
+
+        //Setting Itemclick listeners
+        AdapterView.OnItemClickListener rollnoClickListener = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, "In click listener " +position);
+                Intent intent=new Intent(ViewRequestsActivity.this, StudentDuesActivity.class);
+                intent.putExtra(ROLLNO,students.get(position));
+                intent.putExtra(DEPARTMENT, department);
+                startActivity(intent);
+            }
+        };
+        requests.setOnItemClickListener(rollnoClickListener);
     }
 }

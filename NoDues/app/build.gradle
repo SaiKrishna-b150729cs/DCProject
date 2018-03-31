@@ -37,6 +37,7 @@ dependencies {
 
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.itextpdf:itextg:5.5.10'
+    compile 'com.squareup.okhttp3:okhttp:3.0.1'
 
 }
 

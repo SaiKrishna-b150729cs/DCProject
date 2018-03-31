@@ -45,6 +45,7 @@
         <activity android:name=".DepartmentActivity"
             android:label="DepartmentActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
     </application>
 
 </manifest>

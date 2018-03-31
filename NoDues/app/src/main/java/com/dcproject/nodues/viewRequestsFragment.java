@@ -23,9 +23,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-/**
- * Created by SAI on 30-03-2018.
- */
 
 public class viewRequestsFragment extends Fragment {
 
@@ -115,6 +112,7 @@ public class viewRequestsFragment extends Fragment {
     }
 
     public void displayList(){
+        Log.d(TAG,"In displayList");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, students);
         requests.setAdapter(adapter);
     }

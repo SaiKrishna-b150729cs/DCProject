@@ -1,54 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.dcproject.nodues.DepartmentActivity">
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/department"
-        android:gravity="center"
-        android:textColor="#000"
-        android:textSize="21dp"
-        android:textStyle="bold"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"/>
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/viewReqBtn"
-        android:layout_below="@+id/department"
-        android:text="View Requests"
-        android:layout_marginTop="30dp"/>
-
-    <Button
-        android:id="@+id/UpdateDueBtn"
+    <include
+        layout="@layout/app_bar_department"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/viewReqBtn"
-        android:layout_marginTop="20dp"
-        android:text="Update Due"
-        />
+        android:layout_height="match_parent" />
 
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/addStuBtn"
-        android:layout_below="@+id/UpdateDueBtn"
-        android:text="Add Students"
-        android:layout_marginTop="30dp"/>
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_department"
+        app:menu="@menu/activity_department_drawer" />
 
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/logout_dep"
-        android:layout_below="@+id/addStuBtn"
-        android:text="Logout"
-        android:layout_marginTop="30dp"/>
-
-
-</RelativeLayout>
+</android.support.v4.widget.DrawerLayout>

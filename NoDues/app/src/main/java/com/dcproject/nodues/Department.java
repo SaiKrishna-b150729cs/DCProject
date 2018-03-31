@@ -17,7 +17,6 @@ public class Department {
 
     public Department(String name, boolean selected) {
         super();
-
         this.name = name;
         this.selected = selected;
     }

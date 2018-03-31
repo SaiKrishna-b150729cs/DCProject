@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.dcproject.nodues.AddStudentsActivity">
+    android:layout_height="match_parent">
 
     <TextView
         android:layout_width="fill_parent"
@@ -59,16 +55,6 @@
         android:layout_below="@+id/year"
         android:layout_marginTop="60dp"
         android:text="Add Student" />
-
-    <Button
-        android:id="@+id/Back"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/Button_SignUp"
-        android:layout_marginTop="20dp"
-        android:text="Back" />
-
 
 
 </RelativeLayout>

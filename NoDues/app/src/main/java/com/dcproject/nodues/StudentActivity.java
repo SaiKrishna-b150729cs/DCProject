@@ -1,84 +1,154 @@
 package com.dcproject.nodues;
 
 import android.content.Intent;
-import android.app.Activity;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 
-public class StudentActivity extends Activity {
+public class StudentActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
-    Button logout, request ;
-    // Creating TextView.
     TextView userEmailShow ;
-    // Creating FirebaseAuth.
     FirebaseAuth firebaseAuth ;
-    // Creating FirebaseAuth.
     FirebaseUser firebaseUser;
     public String rollno;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student);
 
-        logout=(Button)findViewById(R.id.logout);
-        request=(Button)findViewById(R.id.request);
-        userEmailShow=(TextView)findViewById(R.id.user_email);
-
         firebaseAuth=FirebaseAuth.getInstance();
 
         if(firebaseAuth.getCurrentUser()==null){
             finish();
-            Intent intent=new Intent(StudentActivity.this, com.dcproject.nodues.LoginActivity.class);
+            Intent intent=new Intent(StudentActivity.this,LoginActivity.class);
             startActivity(intent);
 
-            Toast.makeText(StudentActivity.this,"Please Login in to continue",Toast.LENGTH_LONG).show();
+            Toast.makeText(StudentActivity.this,"Please Login in to continue", Toast.LENGTH_LONG).show();
         }
+
         firebaseUser=firebaseAuth.getCurrentUser();
 
-        userEmailShow.setText("Successfully Logged in,Your Email="+firebaseUser.getEmail());
 
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        View headerView = navigationView.getHeaderView(0);
+        userEmailShow=(TextView)headerView.findViewById(R.id.user_email);
+        userEmailShow.setText(firebaseUser.getEmail());
+
+        //add this line to display menu1 when the activity is loaded
+        displaySelectedScreen(R.id.nav_Instructions);
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void displaySelectedScreen(int itemId) {
+
+        //creating fragment object
+        Fragment fragment = null;
+
+        //initializing the fragment object which is selected
+        switch (itemId) {
+            case R.id.nav_Instructions:
+                fragment = new instructionsFragment();
+                break;
+            case R.id.nav_Profile:
+                fragment = new profileFragment();
+                break;
+            case R.id.nav_Request:
+                fragment = new requestFragment();
+                break;
+            case R.id.nav_Status:
+                fragment = new statusFragment();
+                break;
+            case R.id.nav_signout:
                 firebaseAuth.signOut();
                 finish();
-
-                Intent intent=new Intent(StudentActivity.this, com.dcproject.nodues.LoginActivity.class);
+                Intent intent=new Intent(StudentActivity.this, LoginActivity.class);
                 startActivity(intent);
                 Toast.makeText(StudentActivity.this,"Logged Out Successfully.",Toast.LENGTH_LONG).show();
-            }
-        });
-        final Button[] button = new Button[1];
+                break;
+        }
 
-        button[0] = (Button) findViewById(R.id.request);
+        //replacing the fragment
+        if (fragment != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, fragment);
+            ft.commit();
+        }
 
-        // Capture button clicks
-        button[0].setOnClickListener(new View.OnClickListener() {
-            public void onClick(View arg0) {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+    }
 
-                // Start NewActivity.class
-                Intent myIntent = new Intent(StudentActivity.this,
-                        RequestActivity.class);
-                startActivity(myIntent);
-            }
-        });
 
-            }
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
 
+        //calling the method displayselectedscreen and passing the id of selected menu
+        displaySelectedScreen(item.getItemId());
+        //make this method blank
+        return true;
+    }
 }
 

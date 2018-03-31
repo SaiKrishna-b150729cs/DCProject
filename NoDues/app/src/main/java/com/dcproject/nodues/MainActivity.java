@@ -2,10 +2,13 @@ package com.dcproject.nodues;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,15 +37,22 @@ public class MainActivity extends Activity {
         loadstatus=(ProgressBar)findViewById(R.id.loading);
         loadstatus.setVisibility(View.VISIBLE);
 
-        if (firebaseAuth.getCurrentUser() != null) {
-            Log.d(TAG,"Login Exist loging in");
-            Loginexist();
-        } else {
-            Log.d(TAG,"Not loged in going to LoginActivity");
-            finish();
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
+
+        //if(ConnectivityReceiver.isConnected()) {
+            if (firebaseAuth.getCurrentUser() != null) {
+                Log.d(TAG, "Login Exist loging in");
+                Loginexist();
+            } else {
+                Log.d(TAG, "Not loged in going to LoginActivity");
+                finish();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        //}
+        /*else{
+            //showSnack();
         }
+        */
 
     }
 
@@ -106,4 +116,18 @@ public class MainActivity extends Activity {
 
 
     }
+
+    /*private void showSnack() {
+        String message;
+        int color;
+        message = "Not connected to internet";
+        color = Color.RED;
+
+        Snackbar snackbar = Snackbar.make(findViewById(R.id.fab), message, Snackbar.LENGTH_LONG);
+
+        View sbView = snackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(color);
+        snackbar.show();
+    }*/
 }

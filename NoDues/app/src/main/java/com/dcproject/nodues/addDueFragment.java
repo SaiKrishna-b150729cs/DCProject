@@ -1,11 +1,13 @@
 package com.dcproject.nodues;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.text.TextUtilsCompat;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -19,14 +21,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.Date;
 
-public class UpdateDueActivity extends Activity {
 
+public class addDueFragment extends Fragment {
     EditText etRollno,etDue,etReason;
-    Button  updateBtn;
+    Button updateBtn;
 
     String rollNo;
     String dueAmount;
@@ -37,26 +37,30 @@ public class UpdateDueActivity extends Activity {
     FirebaseAuth firebaseAuth;
     FirebaseUser User;
 
-    DatabaseReference db;
+    DatabaseReference db = FirebaseDatabase.getInstance().getReference();
 
-    public static final String TAG = "UpdateDueActivity";
+    public static String TAG = "addDueFragment";
 
+
+    View view;
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_update_due);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        etRollno=(EditText)findViewById(R.id.rollno);
-        etDue=(EditText)findViewById(R.id.dueamount);
-        etReason=(EditText)findViewById(R.id.reason);
 
-        updateBtn=(Button)findViewById(R.id.addduebtn);
+        Log.d(TAG,"In addDueFragment");
+        view =inflater.inflate(R.layout.fragment_adddue, container, false);
+
+        etRollno=(EditText)view.findViewById(R.id.rollno);
+        etDue=(EditText)view.findViewById(R.id.dueamount);
+        etReason=(EditText)view.findViewById(R.id.reason);
+
+        updateBtn=(Button)view.findViewById(R.id.addduebtn);
 
         firebaseAuth=FirebaseAuth.getInstance();
         if(firebaseAuth.getCurrentUser()==null){
-            finish();
-            Toast.makeText(UpdateDueActivity.this,"Please Login in to continue",Toast.LENGTH_LONG).show();
-            Intent intent=new Intent(UpdateDueActivity.this, com.dcproject.nodues.LoginActivity.class);
+            Toast.makeText(getActivity(),"Please Login in to continue",Toast.LENGTH_LONG).show();
+            Intent intent=new Intent(getActivity(), com.dcproject.nodues.LoginActivity.class);
             startActivity(intent);
         }
 
@@ -65,6 +69,7 @@ public class UpdateDueActivity extends Activity {
 
         db= FirebaseDatabase.getInstance().getReference();
         //retrive department name
+
         DatabaseReference dept=db.child("Departments");
         Query deptquery = dept.orderByChild("email").equalTo(User.getEmail());
         Log.d(TAG,"in getDeptId "+ User.getEmail() +deptquery.toString());
@@ -90,10 +95,22 @@ public class UpdateDueActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if(checkfields())
-                adddue();
+                    adddue();
             }
         });
+
+
+        return  view;
     }
+
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //you can set the title for your toolbar here for different fragments different titles
+        getActivity().setTitle("View Requests");
+    }
+
 
     public boolean checkfields(){
 
@@ -102,17 +119,17 @@ public class UpdateDueActivity extends Activity {
         reason=etReason.getText().toString().trim();
 
         if(rollNo.isEmpty()){
-            Toast.makeText(UpdateDueActivity.this, "Enter a student Roll No", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Enter a student Roll No", Toast.LENGTH_LONG).show();
             return false;
         }
         if(dueAmount.isEmpty()) {
-            Toast.makeText(UpdateDueActivity.this, "Enter a Due amount", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Enter a Due amount", Toast.LENGTH_LONG).show();
             return false;
         }
         else
             dues=Integer.parseInt(dueAmount);
         if(reason.isEmpty()){
-            Toast.makeText(UpdateDueActivity.this, "Enter Due reason", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Enter Due reason", Toast.LENGTH_LONG).show();
             return false;
         }
         return true;
@@ -125,10 +142,8 @@ public class UpdateDueActivity extends Activity {
         etRollno.getText().clear();
         etReason.setText("");
         etDue.setText("");
-        Toast.makeText(this,"Due Added",Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(),"Due Added",Toast.LENGTH_LONG).show();
         Log.d(TAG,"Due updated");
     }
+    
 }
-
-
-

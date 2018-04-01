@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/indigo50">
 
     <EditText
         android:id="@+id/rollno"
@@ -9,6 +10,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:gravity="center"
+        android:maxLines="1"
+        android:inputType="textAutoComplete"
         android:hint="Student Roll Number"/>
 
     <EditText
@@ -18,6 +21,7 @@
         android:layout_marginTop="20dp"
         android:gravity="center"
         android:layout_below="@+id/rollno"
+        android:inputType="numberDecimal"
         android:hint="Due"/>
 
     <EditText
@@ -27,6 +31,8 @@
         android:layout_marginTop="20dp"
         android:gravity="center"
         android:layout_below="@+id/dueamount"
+        android:maxLines="1"
+        android:inputType="text"
         android:hint="Reason"/>
 
     <EditText
@@ -36,6 +42,8 @@
         android:layout_marginTop="20dp"
         android:gravity="center"
         android:layout_below="@+id/reason"
+        android:maxLines="1"
+        android:inputType="textAutoComplete"
         android:hint="Month"/>
 
     <Button
@@ -47,5 +55,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:text="Add Due"/>
+
 
 </RelativeLayout>

@@ -21,16 +21,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 
 public class addDueFragment extends Fragment {
-    EditText etRollno,etDue,etReason;
+    EditText etRollno,etDue,etReason,etmonth;
     Button updateBtn;
 
     String rollNo;
     String dueAmount;
     String reason;
+    String month;
     String email,department;
     int dues;
 
@@ -54,6 +57,7 @@ public class addDueFragment extends Fragment {
         etRollno=(EditText)view.findViewById(R.id.rollno);
         etDue=(EditText)view.findViewById(R.id.dueamount);
         etReason=(EditText)view.findViewById(R.id.reason);
+        etmonth=(EditText)view.findViewById(R.id.month);
 
         updateBtn=(Button)view.findViewById(R.id.addduebtn);
 
@@ -108,15 +112,17 @@ public class addDueFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles
-        getActivity().setTitle("View Requests");
+        getActivity().setTitle("Add Dues");
     }
 
 
     public boolean checkfields(){
 
+        Log.d(TAG,"In Checkfields");
         rollNo=etRollno.getText().toString().trim();
         dueAmount=etDue.getText().toString().trim();
         reason=etReason.getText().toString().trim();
+        month=etmonth.getText().toString().trim();
 
         if(rollNo.isEmpty()){
             Toast.makeText(getActivity(), "Enter a student Roll No", Toast.LENGTH_LONG).show();
@@ -132,16 +138,24 @@ public class addDueFragment extends Fragment {
             Toast.makeText(getActivity(), "Enter Due reason", Toast.LENGTH_LONG).show();
             return false;
         }
+        if(month.isEmpty()){
+            Toast.makeText(getActivity(),"Enter month",Toast.LENGTH_LONG).show();
+            return false;
+        }
         return true;
     }
 
     public void adddue(){
+        Log.d(TAG,"In add due to database");
         DatabaseReference dbDues=db.child("Dues");
-        dbDues.child(department).child(rollNo).push().setValue(new Dues(reason,dues, Calendar.getInstance().getTime()));
+        SimpleDateFormat ISO_8601_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+        String now = ISO_8601_FORMAT.format(new Date());
+        dbDues.child(department).child(rollNo).push().setValue(new Dues(reason,dues,now,month));
         //etRollno.setText("");
         etRollno.getText().clear();
         etReason.setText("");
         etDue.setText("");
+        etmonth.setText("");
         Toast.makeText(getActivity(),"Due Added",Toast.LENGTH_LONG).show();
         Log.d(TAG,"Due updated");
     }

@@ -8,7 +8,8 @@ public class Dues {
     private String id;
     private String reason;
     public int due;
-    Date date;
+    private String month;
+    String date;
 
     public Dues(){
 
@@ -20,14 +21,25 @@ public class Dues {
 
     public void setreason(String reason){this.reason=reason;}
 
-    public Dues(String reason, int due, Date d1){
+    public void setMonth(){this.month=month;}
+
+    public Dues(String reason, int due, String date,String month){
         this.reason=reason;
         this.due=due;
-        this.date=d1;
+        this.date=date;
+        this.month=month;
+    }
+
+    public Dues(String reason, int due, String date){
+        this.reason=reason;
+        this.due=due;
+        this.date=date;
     }
 
     public String getreason(){return reason;}
 
     public Integer getdue(){return due;}
+
+    public String getMonth() {return month;}
 
 }

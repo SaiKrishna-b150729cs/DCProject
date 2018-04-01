@@ -29,7 +29,7 @@ public class updateDueFragment extends Fragment {
 
 
         Log.d(TAG,"In updateDueFragment");
-        view =inflater.inflate(R.layout.fragment_viewrequests, container, false);
+        view =inflater.inflate(R.layout.fragment_updatedue, container, false);
 
         firebaseauth=FirebaseAuth.getInstance();
         user=firebaseauth.getCurrentUser();
@@ -44,6 +44,6 @@ public class updateDueFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles
-        getActivity().setTitle("View Requests");
+        getActivity().setTitle("Update Due");
     }
 }

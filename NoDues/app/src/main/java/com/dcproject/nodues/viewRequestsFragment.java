@@ -27,8 +27,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-import static com.dcproject.nodues.StudentDuesActivity.DEPARTMENT;
-import static com.dcproject.nodues.StudentDuesActivity.ROLLNO;
 
 
 public class viewRequestsFragment extends Fragment {

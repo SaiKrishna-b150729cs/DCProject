@@ -1,5 +1,6 @@
 package com.dcproject.nodues;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -42,6 +43,7 @@ public class addDueFragment extends Fragment {
 
     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
 
+    ProgressDialog progressDialog;
     public static String TAG = "addDueFragment";
 
 
@@ -98,8 +100,14 @@ public class addDueFragment extends Fragment {
         updateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.setMessage("Please Wait");
+                progressDialog.show();
+                progressDialog.setCanceledOnTouchOutside(false);
+
                 if(checkfields())
                     adddue();
+
+                progressDialog.dismiss();
             }
         });
 

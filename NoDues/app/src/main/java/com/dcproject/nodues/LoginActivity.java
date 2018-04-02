@@ -165,6 +165,8 @@ public class LoginActivity extends Activity {
 
         progressDialog.setMessage("Please Wait");
         progressDialog.show();
+        progressDialog.setCanceledOnTouchOutside(false);
+
         Log.d(TAG, "signIn:" + email);
 
         // Calling  signInWithEmailAndPassword function with firebase object and passing EmailHolder and PasswordHolder inside it.

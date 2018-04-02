@@ -17,12 +17,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-/**
- * Created by SAI on 30-03-2018.
- */
 
 public class instructionsFragment extends Fragment {
-    public static final String TAG = "statusFragment";
+    public static final String TAG = "instructionFragment";
 
     ListView instr_lv;
     View view;

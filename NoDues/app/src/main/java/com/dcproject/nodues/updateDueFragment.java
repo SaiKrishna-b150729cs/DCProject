@@ -34,8 +34,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static com.dcproject.nodues.StudentDuesActivity.DEPARTMENT;
-import static com.dcproject.nodues.StudentDuesActivity.ROLLNO;
 
 
 public class updateDueFragment extends Fragment {

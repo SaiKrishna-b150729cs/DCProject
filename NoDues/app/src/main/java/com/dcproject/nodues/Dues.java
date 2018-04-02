@@ -46,6 +46,6 @@ public class Dues {
 
     public String getMonth() {return month;}
 
-    public int getRemaining() {return remaining;}
+    public Integer getRemaining() {return remaining;}
 
 }

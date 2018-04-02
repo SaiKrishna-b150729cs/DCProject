@@ -1,12 +1,16 @@
 package com.dcproject.nodues;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -22,6 +26,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
+
+import static com.dcproject.nodues.StudentDuesActivity.DEPARTMENT;
+import static com.dcproject.nodues.StudentDuesActivity.ROLLNO;
 
 
 public class viewRequestsFragment extends Fragment {
@@ -113,7 +120,25 @@ public class viewRequestsFragment extends Fragment {
 
     public void displayList(){
         Log.d(TAG,"In displayList");
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, students);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, students);
         requests.setAdapter(adapter);
+
+        //Setting Itemclick listeners
+        AdapterView.OnItemClickListener rollnoClickListener = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, "In click listener " +position);
+                StudentDuesFragment fragment= StudentDuesFragment.newInstance(students.get(position), department);
+                //replacing the fragment
+                if (fragment != null) {
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    ft.replace(R.id.content_frame, fragment);
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
+
+            }
+        };
+        requests.setOnItemClickListener(rollnoClickListener);
     }
 }

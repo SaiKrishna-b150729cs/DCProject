@@ -33,12 +33,57 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_marginTop="10dp"
+        android:id="@+id/head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:text="DUE"
+            android:id="@+id/tv_rem"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
+            android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+            android:minHeight="?android:attr/listPreferredItemHeightSmall"
+            android:layout_weight="1" />
+
+        <TextView
+            android:text="Reason"
+            android:id="@+id/tv_res"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
+            android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+            android:minHeight="?android:attr/listPreferredItemHeightSmall"
+            android:layout_weight="4"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/empty"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="No Dues to update"
+        android:visibility="gone"/>
+
+
+    <LinearLayout
         android:id="@+id/duelist_ll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="3"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical">
 
         <ListView
             android:id="@+id/due_lv"

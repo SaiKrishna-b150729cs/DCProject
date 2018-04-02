@@ -14,11 +14,13 @@
 
 
     <LinearLayout
+        android:id="@+id/stat_lv"
         android:layout_width="fill_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:orientation="horizontal"
-        android:layout_weight="5">
+        android:layout_weight="1"
+        android:visibility="gone">
 
         <ListView
             android:id="@+id/dep_list"
@@ -33,13 +35,25 @@
             android:layout_weight="0.40"/>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/tv_nor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="No Requets"
+        android:textStyle="bold"
+        android:textSize="25dp"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="visible"
+        android:layout_weight="1"/>
+
     <Button
         android:id="@+id/generate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Generate No Due"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="1"/>
+        android:layout_gravity="center_horizontal" />
 
 
 </LinearLayout>

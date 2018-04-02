@@ -65,6 +65,7 @@ public class updateDueFragment extends Fragment {
         Log.d(TAG,"In updateDueFragment");
         view =inflater.inflate(R.layout.fragment_updatedue, container, false);
 
+        progressDialog=new ProgressDialog(getActivity());
         firebaseauth=FirebaseAuth.getInstance();
         User=firebaseauth.getCurrentUser();
 

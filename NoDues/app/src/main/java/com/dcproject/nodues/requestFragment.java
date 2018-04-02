@@ -1,5 +1,6 @@
 package com.dcproject.nodues;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -41,6 +42,7 @@ public class requestFragment extends Fragment {
     requestFragment.MyCustomAdapter dataAdapter = null;
     ArrayList<String> departments = new ArrayList<String>();
 
+    ProgressDialog progressDialog;
     public static final String TAG = "requestFragment";
 
     View view;

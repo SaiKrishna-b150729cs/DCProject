@@ -150,14 +150,11 @@ public class profileFragment extends Fragment {
                             sturef.child("programme").setValue(programme_et.getText().toString());
                             sturef.child("year").setValue(year_et.getText().toString());
                             sturef.child("phone").setValue(phone_et.getText().toString());
+
                         }
                         else {
                             Toast.makeText(getActivity(),"Please fill all fields",Toast.LENGTH_LONG).show();
                         }
-                        view.findViewById(R.id.profile_layout).setVisibility(View.VISIBLE);
-                        view.findViewById(R.id.details_view).setVisibility(View.VISIBLE);
-                        view.findViewById(R.id.edit_profile).setVisibility(View.GONE);
-                        view.findViewById(R.id.details_edit).setVisibility(View.GONE);
                         progressDialog.dismiss();
 
                     }

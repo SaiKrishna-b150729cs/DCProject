@@ -162,7 +162,6 @@ public class updateDueFragment extends Fragment {
                     @Override
                     public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
                         Log.d(TAG, "In click listener " +position);
-                        AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
                         LayoutInflater inflater = getActivity().getLayoutInflater();
                         final View view_ad=inflater.inflate(R.layout.alert_updatedue, null);
                         res_tv=(TextView)view_ad.findViewById(R.id.tv_reason);
@@ -172,6 +171,7 @@ public class updateDueFragment extends Fragment {
                         res_tv.setText(reslist.get(position));
                         rem_tv.setText(duelist.get(position));
 
+                        AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
                         builder.setView(view_ad);
                         builder.setTitle("Updatedue");
                         builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {

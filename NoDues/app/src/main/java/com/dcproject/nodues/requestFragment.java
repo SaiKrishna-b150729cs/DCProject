@@ -224,13 +224,18 @@ public class requestFragment extends Fragment {
 
     public void sendrequest(){
         ArrayList<Department> DepartmentList = dataAdapter.DepartmentList;
+        String body;
+        body = "Request to the following departments is succesful\n";
 
         for(int i=0;i<DepartmentList.size();i++){
             Department Department = DepartmentList.get(i);
             if(Department.isSelected()){
+                body = body + Department.getName() + "\n";
                 DatabaseReference request = db.child("Request").child(Department.getName()).child(rollno);
                 request.setValue("pending");
             }
         }
+        StudentDuesFragment.sendEmail(firebaseAuth.getCurrentUser().getEmail(),"NoDues NITC",body);
+
     }
 }

@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dcproject.nodues._MainActivity.GMailSender;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,6 +40,7 @@ public class StudentDuesFragment extends Fragment {
     TextView rollnoShow;
     ListView duesView;
     Button approve, reject;
+
 
     ArrayList<String> duelist = new ArrayList<String>();
     ArrayList<String> reslist = new ArrayList<String>();
@@ -80,6 +84,7 @@ public class StudentDuesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Log.d(TAG,"In StudentDueFragment");
         view= inflater.inflate(R.layout.fragment_student_dues, container, false);
         progressDialog=new ProgressDialog(getActivity());
 
@@ -126,21 +131,56 @@ public class StudentDuesFragment extends Fragment {
 
 
     public void approveRequest(){
+        Log.d(TAG,"In Approve Listener");
         DatabaseReference db= FirebaseDatabase.getInstance().getReference();
         DatabaseReference request=db.child("Request").child(department).child(rollno);
+        DatabaseReference stu=db.child("Students").child(rollno).child("email");
         request.setValue("approved");
         Toast.makeText(getActivity(), "Approved Succesfully", Toast.LENGTH_LONG ).show();
         Log.d(TAG,"Approved" );
-        getFragmentManager().popBackStackImmediate ();
+
+        stu.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG,dataSnapshot.getValue().toString());
+                sendEmail(dataSnapshot.getValue().toString(),"NoDues NITC",department+" has approved your request for Nodue");
+                //Toast.makeText(getActivity(),"sdfsdfdf",Toast.LENGTH_LONG).show();
+                getFragmentManager().popBackStackImmediate ();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     public void rejectRequest(){
         DatabaseReference db= FirebaseDatabase.getInstance().getReference();
         DatabaseReference request=db.child("Request").child(department).child(rollno);
+        DatabaseReference stu=db.child("Students").child(rollno).child("email");
         request.setValue("rejected");
         Toast.makeText(getActivity(), "Rejected Succesfully", Toast.LENGTH_LONG ).show();
         Log.d(TAG,"Rejected" );
-        getFragmentManager().popBackStackImmediate ();
+
+        stu.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG,dataSnapshot.getValue().toString());
+                sendEmail(dataSnapshot.getValue().toString(),"NoDues NITC",department+" has rejected your request for Nodue");
+                //Toast.makeText(getActivity(),"sdfsdfdf",Toast.LENGTH_LONG).show();
+                getFragmentManager().popBackStackImmediate ();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     public void displayDuesList(){
@@ -185,5 +225,40 @@ public class StudentDuesFragment extends Fragment {
 
             }
         });
+    }
+
+
+    public static void sendEmail(final String to, final String subject, final String message) {
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    GMailSender sender = new GMailSender("noduesnitc@gmail.com","nitcalicut");
+                    sender.sendMail(subject, message, "noduesnitc@gmail.com", to);
+                    Log.w("sendEmail","Email successfully sent!");
+
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            //Toast.makeText(getActivity(),"Email successfully sent!", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+
+                } catch (final Exception e) {
+                    Log.e("sendEmail", e.getMessage(), e);
+
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            //Toast.makeText(getActivity(),"Email not successfully!", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
+
+        }).start();
     }
 }

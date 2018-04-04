@@ -131,6 +131,7 @@ public class statusFragment extends Fragment {
                 Log.d(TAG,"Getting Departments and status"+dataSnapshot.getChildrenCount());
                 departments.clear();dep=0;
                 status.clear();sts=0;
+                gen_btn.setEnabled(false);
                 for (DataSnapshot dept : dataSnapshot.getChildren()) {
                     if (dept.hasChild(rollno)) {
                         status.add(dept.child(rollno).getValue().toString());

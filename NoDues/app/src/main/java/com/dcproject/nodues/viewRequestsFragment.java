@@ -1,5 +1,6 @@
 package com.dcproject.nodues;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -38,6 +39,8 @@ public class viewRequestsFragment extends Fragment {
     public ArrayList<String> students= new ArrayList<String>();
     public String department;
 
+    ProgressDialog progressDialog;
+
     public static String TAG = "viewRequestsFragment";
 
 
@@ -49,6 +52,15 @@ public class viewRequestsFragment extends Fragment {
 
         Log.d(TAG,"In viewRequestsFragment");
         view =inflater.inflate(R.layout.fragment_viewrequests, container, false);
+
+        progressDialog=new ProgressDialog(getActivity());
+
+        progressDialog.setMessage("Please Wait");
+        progressDialog.show();
+        progressDialog.setCanceledOnTouchOutside(false);
+
+        view.findViewById(R.id.tv_noreq).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.requests_list).setVisibility(View.GONE);
 
         firebaseauth=FirebaseAuth.getInstance();
         user=firebaseauth.getCurrentUser();
@@ -96,17 +108,26 @@ public class viewRequestsFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 students.clear();
-                for(DataSnapshot student : dataSnapshot.getChildren()){
-                    if(student.getValue().toString().equals("pending")){
-                        students.add(student.getKey());
+                if(dataSnapshot.hasChildren()) {
+                    view.findViewById(R.id.tv_noreq).setVisibility(View.GONE);
+                    view.findViewById(R.id.requests_list).setVisibility(View.VISIBLE);
+                    for (DataSnapshot student : dataSnapshot.getChildren()) {
+                        if (student.getValue().toString().equals("pending")) {
+                            students.add(student.getKey());
+                        }
                     }
+                    ListIterator list = students.listIterator();
+                    while (list.hasNext()) {
+                        String rollno = (String) list.next();
+                        Log.d(TAG, "roll no " + rollno);
+                    }
+                    displayList();
                 }
-                ListIterator list= students.listIterator();
-                while(list.hasNext()){
-                    String rollno=(String) list.next();
-                    Log.d(TAG,"roll no "+ rollno);
+                else {
+                    view.findViewById(R.id.tv_noreq).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.requests_list).setVisibility(View.GONE);
                 }
-                displayList();
+                progressDialog.dismiss();
             }
 
             @Override

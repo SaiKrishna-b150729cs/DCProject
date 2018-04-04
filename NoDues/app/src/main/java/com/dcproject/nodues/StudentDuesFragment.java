@@ -1,5 +1,6 @@
 package com.dcproject.nodues;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,7 +37,12 @@ public class StudentDuesFragment extends Fragment {
     TextView rollnoShow;
     ListView duesView;
     Button approve, reject;
-    ArrayList<String> dues = new ArrayList<String>();
+
+    ArrayList<String> duelist = new ArrayList<String>();
+    ArrayList<String> reslist = new ArrayList<String>();
+
+
+    ProgressDialog progressDialog;
     public static final String TAG = "StudentDuesFragment";
 
 
@@ -75,6 +81,18 @@ public class StudentDuesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view= inflater.inflate(R.layout.fragment_student_dues, container, false);
+        progressDialog=new ProgressDialog(getActivity());
+
+        progressDialog.setMessage("Please Wait");
+        progressDialog.show();
+        progressDialog.setCanceledOnTouchOutside(false);
+
+        view.findViewById(R.id.head).setVisibility(View.GONE);
+        view.findViewById(R.id.tv_nodue).setVisibility(View.GONE);
+        view.findViewById(R.id.dues_list).setVisibility(View.GONE);
+        view.findViewById(R.id.approve_button).setVisibility(View.GONE);
+        view.findViewById(R.id.reject_button).setVisibility(View.GONE);
+
         if (getArguments() != null) {
             rollno = getArguments().getString(ARG_PARAM1);
             department = getArguments().getString(ARG_PARAM2);
@@ -131,18 +149,35 @@ public class StudentDuesFragment extends Fragment {
         studentdues.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                dues.clear();
-                dues.add("Due\t\tReason");
-                for(DataSnapshot duesnap : dataSnapshot.getChildren()){
+                duelist.clear();
+                reslist.clear();
+                for (DataSnapshot duesnap : dataSnapshot.getChildren()) {
                     Dues due = duesnap.getValue(Dues.class);
-                    if(due!=null && due.getRemaining()>0) {
-                        String display = due.getRemaining().toString() +"\t\t"+ due.getreason();
-                        dues.add(display);
+                    if (due != null && due.getRemaining() > 0) {
+                        duelist.add(due.getRemaining().toString());
+                        reslist.add(due.getreason());
                     }
 
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_activated_1, dues);
-                duesView.setAdapter(adapter);
+                CustomAdapter listadapter = new CustomAdapter(getActivity(), duelist, reslist);
+                duesView.setAdapter(listadapter);
+                if(!duelist.isEmpty()){
+                    view.findViewById(R.id.head).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.tv_nodue).setVisibility(View.GONE);
+                    view.findViewById(R.id.dues_list).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.approve_button).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.reject_button).setVisibility(View.VISIBLE);
+                    progressDialog.dismiss();
+                }
+                else{
+                    view.findViewById(R.id.head).setVisibility(View.GONE);
+                    view.findViewById(R.id.tv_nodue).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.dues_list).setVisibility(View.GONE);
+                    view.findViewById(R.id.approve_button).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.reject_button).setVisibility(View.VISIBLE);
+                    progressDialog.dismiss();
+
+                }
             }
 
             @Override

@@ -51,8 +51,8 @@ public class LoginActivity extends Activity {
     ///google sigin
     public static final String TAG = "LoginActivity";
     public static final int RequestSignInCode = 7;
-    public GoogleApiClient googleApiClient;
-    com.google.android.gms.common.SignInButton googlesignInBtn;
+    //public GoogleApiClient googleApiClient;
+    //com.google.android.gms.common.SignInButton googlesignInBtn;
     TextView LoginUserName, LoginUserEmail;
 
 
@@ -68,23 +68,22 @@ public class LoginActivity extends Activity {
         Login=(Button)findViewById(R.id.button_login);
         ForgotPassword=(TextView) findViewById(R.id.ForgotPasswordBtn);
 
-        googlesignInBtn=(SignInButton) findViewById(R.id.googleSignInBtn);
+        //googlesignInBtn=(SignInButton) findViewById(R.id.googleSignInBtn);
 
         progressDialog=new ProgressDialog(LoginActivity.this);
 
         firebaseAuth=FirebaseAuth.getInstance();
 
         // Creating and Configuring Google Sign In object.
-        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        /*GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
         // Creating and Configuring Google Api Client.
         googleApiClient = new GoogleApiClient.Builder(LoginActivity.this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
                 .build();
-
+        */
 
         if(firebaseAuth.getCurrentUser()!=null){
             Loginexist();
@@ -104,12 +103,13 @@ public class LoginActivity extends Activity {
             }
         });
 
-        googlesignInBtn.setOnClickListener(new View.OnClickListener() {
+        /*googlesignInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 googleSignIn();
             }
         });
+        */
 
         ForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,7 +132,7 @@ public class LoginActivity extends Activity {
 
     }
 
-    @Override
+    /*@Override
     protected void onStart() {
         super.onStart();
         googleApiClient.connect();
@@ -143,6 +143,7 @@ public class LoginActivity extends Activity {
         super.onStop();
         googleApiClient.disconnect();
     }
+    */
 
     public boolean Validate(){
         EmailHolder = email.getText().toString().trim();
@@ -352,7 +353,7 @@ public class LoginActivity extends Activity {
     }
 
 
-    public void googleSignIn(){
+    /*public void googleSignIn(){
         Intent AuthIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
         startActivityForResult(AuthIntent, RequestSignInCode);
     }
@@ -399,15 +400,12 @@ public class LoginActivity extends Activity {
                             LoginUserName.setText("NAME =  "+ firebaseUser.getDisplayName().toString());
                             // Setting up Email into TextView.
                             LoginUserEmail.setText("Email =  "+ firebaseUser.getEmail().toString());
-                            */
+
                         }else {
                             Toast.makeText(LoginActivity.this,"Something Went Wrong",Toast.LENGTH_LONG).show();
                         }
                     }
                 });
-    }
-
-
-
+    }*/
 
 }

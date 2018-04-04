@@ -6,40 +6,46 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.dcproject.nodues.LoginActivity">
+    tools:context="com.dcproject.nodues.LoginActivity"
+    android:background="#FFFFFF">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="20dp">
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="80dp">
 
-        <ImageView android:src="@drawable/nitc"
+        <ImageView
+            android:id="@+id/logo"
+            android:src="@drawable/nitc"
             android:layout_width="wrap_content"
             android:layout_height="72dp"
-            android:layout_marginBottom="24dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="0dp"/>
+            android:layout_marginTop="10dp"/>
 
         <TextView
+            android:id="@+id/textview1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textview1"
             android:gravity="center"
+            android:text="No Due Automator Login"
             android:textColor="#000"
             android:textSize="21dp"
             android:textStyle="bold"
-            android:text="No Due Automator Login"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="80dp"/>
+            android:layout_below="@+id/logo"
+            android:layout_marginTop="10dp"/>
 
         <EditText
+            android:id="@+id/editText_email"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:hint="Email Id"
-            android:id="@+id/editText_email"
             android:layout_below="@+id/textview1"
-            android:layout_marginTop="20dp"/>
+            android:singleLine="true"
+            android:layout_marginTop="40dp"/>
 
         <EditText
             android:layout_width="fill_parent"
@@ -73,7 +79,7 @@
             android:layout_marginTop="20dp"
             android:layout_below="@+id/button_login"/>
 
-        <com.google.android.gms.common.SignInButton
+        <!--com.google.android.gms.common.SignInButton
             android:id="@+id/googleSignInBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -81,7 +87,7 @@
             android:layout_below="@+id/ForgotPasswordBtn"
             android:layout_marginStart="29dp"
             android:layout_marginTop="27dp"
-            android:src="@drawable/common_google_signin_btn_icon_light" />
+            android:src="@drawable/common_google_signin_btn_icon_light" /-->
 
     </RelativeLayout>
 

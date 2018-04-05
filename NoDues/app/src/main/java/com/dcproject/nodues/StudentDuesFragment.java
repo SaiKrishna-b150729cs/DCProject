@@ -41,6 +41,7 @@ public class StudentDuesFragment extends Fragment {
     ListView duesView;
     Button approve, reject;
 
+    String msg;
 
     ArrayList<String> duelist = new ArrayList<String>();
     ArrayList<String> reslist = new ArrayList<String>();
@@ -158,7 +159,7 @@ public class StudentDuesFragment extends Fragment {
     }
 
     public void rejectRequest(){
-        DatabaseReference db= FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference db= FirebaseDatabase.getInstance().getReference();
         DatabaseReference request=db.child("Request").child(department).child(rollno);
         DatabaseReference stu=db.child("Students").child(rollno).child("email");
         request.setValue("rejected");
@@ -169,9 +170,31 @@ public class StudentDuesFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d(TAG,dataSnapshot.getValue().toString());
-                sendEmail(dataSnapshot.getValue().toString(),"NoDues NITC",department+" has rejected your request for Nodue");
-                //Toast.makeText(getActivity(),"sdfsdfdf",Toast.LENGTH_LONG).show();
-                getFragmentManager().popBackStackImmediate ();
+                final String toemail=dataSnapshot.getValue().toString();
+
+                msg=department+" has rejected your request for Nodue\n";
+                msg=msg+"You have Dues remaining to pay\n";
+                DatabaseReference dues=db.child("Dues").child(department).child(rollno);
+                dues.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot due:dataSnapshot.getChildren()) {
+                            Dues d;
+                            d=due.getValue(Dues.class);
+                            msg = msg + d.getRemaining() + "     " +d.getreason()+"\n";
+                        }
+                        Log.d(TAG,msg.toString());
+                        sendEmail(toemail,"NoDues NITC", msg);
+                        //Toast.makeText(getActivity(),"sdfsdfdf",Toast.LENGTH_LONG).show();
+                        getFragmentManager().popBackStackImmediate ();
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
             }
 

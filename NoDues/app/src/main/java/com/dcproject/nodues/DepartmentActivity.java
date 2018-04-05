@@ -118,6 +118,9 @@ public class DepartmentActivity extends AppCompatActivity
             case R.id.nav_AddStudent:
                 fragment = new addStudentsFragment();
                 break;
+            case R.id.nav_history:
+                fragment = new historyFragment();
+                break;
             case R.id.nav_signout:
                 firebaseAuth.signOut();
                 finish();

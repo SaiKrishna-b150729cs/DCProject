@@ -1,5 +1,6 @@
 package com.dcproject.nodues;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,8 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,6 +46,7 @@ public class addDueFragment extends Fragment {
 
     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
 
+    ProgressDialog progressDialog;
     public static String TAG = "addDueFragment";
 
 
@@ -53,11 +58,32 @@ public class addDueFragment extends Fragment {
 
         Log.d(TAG,"In addDueFragment");
         view =inflater.inflate(R.layout.fragment_adddue, container, false);
+        progressDialog=new ProgressDialog(getActivity());
+
 
         etRollno=(EditText)view.findViewById(R.id.rollno);
         etDue=(EditText)view.findViewById(R.id.dueamount);
         etReason=(EditText)view.findViewById(R.id.reason);
-        etmonth=(EditText)view.findViewById(R.id.month);
+        //etmonth=(EditText)view.findViewById(R.id.month);
+        month=null;
+        Spinner spinner = (Spinner) view.findViewById(R.id.sp_month);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.month, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String[] months= getResources().getStringArray(R.array.month);
+                month=months[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                month=null;
+            }
+        });
+
 
         updateBtn=(Button)view.findViewById(R.id.addduebtn);
 
@@ -73,6 +99,7 @@ public class addDueFragment extends Fragment {
 
         db= FirebaseDatabase.getInstance().getReference();
         //retrive department name
+
 
         DatabaseReference dept=db.child("Departments");
         Query deptquery = dept.orderByChild("email").equalTo(User.getEmail());
@@ -98,8 +125,14 @@ public class addDueFragment extends Fragment {
         updateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog.setMessage("Please Wait");
+                progressDialog.show();
+                progressDialog.setCanceledOnTouchOutside(false);
+
                 if(checkfields())
                     adddue();
+
+                progressDialog.dismiss();
             }
         });
 
@@ -122,7 +155,7 @@ public class addDueFragment extends Fragment {
         rollNo=etRollno.getText().toString().trim();
         dueAmount=etDue.getText().toString().trim();
         reason=etReason.getText().toString().trim();
-        month=etmonth.getText().toString().trim();
+        //month=etmonth.getText().toString().trim();
 
         if(rollNo.isEmpty()){
             Toast.makeText(getActivity(), "Enter a student Roll No", Toast.LENGTH_LONG).show();
@@ -155,7 +188,8 @@ public class addDueFragment extends Fragment {
         etRollno.getText().clear();
         etReason.setText("");
         etDue.setText("");
-        etmonth.setText("");
+        //etmonth.setText("");
+        month=null;
         Toast.makeText(getActivity(),"Due Added",Toast.LENGTH_LONG).show();
         Log.d(TAG,"Due updated");
     }

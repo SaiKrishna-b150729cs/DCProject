@@ -1,5 +1,6 @@
 package com.dcproject.nodues;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -41,6 +42,7 @@ public class requestFragment extends Fragment {
     requestFragment.MyCustomAdapter dataAdapter = null;
     ArrayList<String> departments = new ArrayList<String>();
 
+    ProgressDialog progressDialog;
     public static final String TAG = "requestFragment";
 
     View view;
@@ -222,13 +224,18 @@ public class requestFragment extends Fragment {
 
     public void sendrequest(){
         ArrayList<Department> DepartmentList = dataAdapter.DepartmentList;
+        String body;
+        body = "Request to the following departments is succesful\n";
 
         for(int i=0;i<DepartmentList.size();i++){
             Department Department = DepartmentList.get(i);
             if(Department.isSelected()){
+                body = body + Department.getName() + "\n";
                 DatabaseReference request = db.child("Request").child(Department.getName()).child(rollno);
                 request.setValue("pending");
             }
         }
+        StudentDuesFragment.sendEmail(firebaseAuth.getCurrentUser().getEmail(),"NoDues NITC",body);
+
     }
 }

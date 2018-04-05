@@ -14,12 +14,15 @@
             android:layout_height="wrap_content"
             android:text="Reason:"
             android:textStyle="bold"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
             android:textSize="20dp" />
         <TextView
             android:id="@+id/tv_reason"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
             android:textSize="20dp"/>
     </LinearLayout>
 
@@ -27,18 +30,20 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp">
+        android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Due Remaining:"
             android:textStyle="bold"
-            android:textSize="20dp"/>
+            android:textSize="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"/>
         <TextView
             android:id="@+id/tv_remaining"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
             android:textSize="20dp"/>
     </LinearLayout>
@@ -49,7 +54,9 @@
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:hint="Enter Paid amount"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"/>
 
     <EditText
         android:id="@+id/et_payid"
@@ -57,7 +64,9 @@
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:hint="Enter payment id"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"/>
 
 
 

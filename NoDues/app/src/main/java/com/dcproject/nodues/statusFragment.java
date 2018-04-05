@@ -1,6 +1,7 @@
 package com.dcproject.nodues;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -53,6 +54,8 @@ public class statusFragment extends Fragment {
     String rollno;
     int dep=0,sts=0;
     ListView status_lv,dep_lv;
+    ProgressDialog progressDialog;
+
 
     private File pdfFile;
     final private int REQUEST_CODE_ASK_PERMISSIONS = 111;
@@ -71,11 +74,20 @@ public class statusFragment extends Fragment {
         dep_lv=(ListView) view.findViewById(R.id.dep_list);
         gen_btn=(Button)view.findViewById(R.id.generate);
 
+        progressDialog=new ProgressDialog(getActivity());
+        progressDialog.setMessage("Please Wait");
+        progressDialog.show();
+        progressDialog.setCanceledOnTouchOutside(false);
+
+
+
         gen_btn.setEnabled(false);
 
         user= FirebaseAuth.getInstance().getCurrentUser();
         final Query student = db.child("Students").orderByChild("email").equalTo(user.getEmail());
 
+
+        //get student Id
         student.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -113,22 +125,39 @@ public class statusFragment extends Fragment {
 
         DatabaseReference request=db.child("Request");
 
-        request.addListenerForSingleValueEvent(new ValueEventListener() {
+        request.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d(TAG,"Getting Departments and status"+dataSnapshot.getChildrenCount());
-                for(DataSnapshot dept : dataSnapshot.getChildren()){
-                    departments.add(dept.getKey());
-                    dep++;
-                    status.add(dept.child(rollno).getValue().toString());
-                    if(dept.child(rollno).getValue().equals("approved"))
-                        sts++;
+                departments.clear();dep=0;
+                status.clear();sts=0;
+                gen_btn.setEnabled(false);
+                for (DataSnapshot dept : dataSnapshot.getChildren()) {
+                    if (dept.hasChild(rollno)) {
+                        status.add(dept.child(rollno).getValue().toString());
+                        departments.add(dept.getKey());
+                        dep++;
+                        if (dept.child(rollno).getValue().equals("approved"))
+                            sts++;
+                    }
                 }
-                setlistview();
+                if(dep!=0){
+                    view.findViewById(R.id.stat_lv).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.tv_nor).setVisibility(View.GONE);
+                    setlistview();
+                    progressDialog.dismiss();
+                }
+                else {
+                    view.findViewById(R.id.stat_lv).setVisibility(View.GONE);
+                    view.findViewById(R.id.tv_nor).setVisibility(View.VISIBLE);
+                    progressDialog.dismiss();
+                }
+
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Log.d(TAG,"Database Error");
+                progressDialog.dismiss();
             }
         });
     }
@@ -147,8 +176,13 @@ public class statusFragment extends Fragment {
             gen_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     try {
+                        progressDialog.setMessage("Please Wait creating PDF");
+                        progressDialog.show();
+                        progressDialog.setCanceledOnTouchOutside(false);
                         createPdfWrapper();
+                        progressDialog.dismiss();
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     } catch (DocumentException e) {

@@ -118,6 +118,9 @@ public class DepartmentActivity extends AppCompatActivity
             case R.id.nav_AddStudent:
                 fragment = new addStudentsFragment();
                 break;
+            case R.id.nav_history:
+                fragment = new historyFragment();
+                break;
             case R.id.nav_signout:
                 firebaseAuth.signOut();
                 finish();
@@ -131,6 +134,7 @@ public class DepartmentActivity extends AppCompatActivity
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_frame, fragment);
+            ft.addToBackStack(null);
             ft.commit();
         }
 

@@ -1,6 +1,7 @@
 package com.dcproject.nodues;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,8 +34,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static com.dcproject.nodues.StudentDuesActivity.DEPARTMENT;
-import static com.dcproject.nodues.StudentDuesActivity.ROLLNO;
 
 
 public class updateDueFragment extends Fragment {
@@ -53,8 +52,10 @@ public class updateDueFragment extends Fragment {
     int amtint;
 
     ArrayList<String> duelist = new ArrayList<String>();
+    ArrayList<String> reslist = new ArrayList<String>();
     ArrayList<String> db_dues = new ArrayList<String>();
 
+    ProgressDialog progressDialog;
     public static String TAG = "updateDueFragment";
 
     View view;
@@ -64,6 +65,7 @@ public class updateDueFragment extends Fragment {
         Log.d(TAG,"In updateDueFragment");
         view =inflater.inflate(R.layout.fragment_updatedue, container, false);
 
+        progressDialog=new ProgressDialog(getActivity());
         firebaseauth=FirebaseAuth.getInstance();
         User=firebaseauth.getCurrentUser();
 
@@ -75,9 +77,15 @@ public class updateDueFragment extends Fragment {
         getdue_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                progressDialog.setMessage("Please Wait fetching Dues");
+                progressDialog.show();
+                progressDialog.setCanceledOnTouchOutside(false);
+
                 roll = roll_et.getText().toString();
                 if (!roll.isEmpty()) {
                     //get department key
+                    roll=roll.toUpperCase();
                     DatabaseReference dept = db.child("Departments");
                     Query deptquery = dept.orderByChild("email").equalTo(User.getEmail());
                     Log.d(TAG, "in getDeptId " + User.getEmail() + deptquery.toString());
@@ -91,14 +99,17 @@ public class updateDueFragment extends Fragment {
                                 break;
                             }
                             getduelist();
+                            progressDialog.dismiss();
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                             Log.d(TAG, "database error in getdept id");
+                            //progressDialog.dismiss();
                         }
                     });
                 }
                 else{
+                    progressDialog.dismiss();
                     Toast.makeText(getActivity(),"Enter a Student id",Toast.LENGTH_LONG).show();
                 }
 
@@ -120,32 +131,47 @@ public class updateDueFragment extends Fragment {
         Log.d(TAG,"getting duelist");
         DatabaseReference stu_due=db.child("Dues").child(department).child(roll);
 
-        stu_due.addListenerForSingleValueEvent(new ValueEventListener() {
+        stu_due.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                duelist.clear();
+                reslist.clear();
+                if(dataSnapshot.hasChildren()) {
+                    view.findViewById(R.id.head).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.empty).setVisibility(View.GONE);
+                    view.findViewById(R.id.duelist_ll).setVisibility(View.VISIBLE);
+                }
+                else{
+                    view.findViewById(R.id.head).setVisibility(View.GONE);
+                    view.findViewById(R.id.empty).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.duelist_ll).setVisibility(View.GONE);
+                }
                 for (DataSnapshot due : dataSnapshot.getChildren()) {
                     Log.d(TAG,"dueid"+due.getKey());
                     db_dues.add(due.getKey());
                     duedetails=due.getValue(Dues.class);
-                    duelist.add(duedetails.getdue().toString()+" "+duedetails.getreason());
+                    duelist.add(duedetails.getRemaining().toString());
+                    reslist.add(duedetails.getreason());
                 }
                 Log.d(TAG,"changing layout");
-                ArrayAdapter<String> listadapter =new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,duelist);
+                //ArrayAdapter<String> listadapter =new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,duelist);
+                CustomAdapter listadapter=new CustomAdapter(getActivity(),duelist,reslist);
                 lv_due.setAdapter(listadapter);
 
                 AdapterView.OnItemClickListener dueClickListener = new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
                         Log.d(TAG, "In click listener " +position);
-                        AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
                         LayoutInflater inflater = getActivity().getLayoutInflater();
                         final View view_ad=inflater.inflate(R.layout.alert_updatedue, null);
                         res_tv=(TextView)view_ad.findViewById(R.id.tv_reason);
                         rem_tv=(TextView)view_ad.findViewById(R.id.tv_remaining);
-                        String[] splitStr = duelist.get(position).split(" ",2);
-                        Log.d(TAG,splitStr[1]+splitStr[0]);
-                        res_tv.setText(splitStr[1]);
-                        rem_tv.setText(splitStr[0]);
+
+                        Log.d(TAG,duelist.get(position)+reslist.get(position));
+                        res_tv.setText(reslist.get(position));
+                        rem_tv.setText(duelist.get(position));
+
+                        AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
                         builder.setView(view_ad);
                         builder.setTitle("Updatedue");
                         builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
